@@ -1,9 +1,10 @@
 import React, { useState, useEffect } from "react";
 
 import Product from "./Product";
+import Cart from "./Cart";
 import "../styles/Dashboard.css";
 
-const Dashboard = ({ data: { products } }) => (
+const Dashboard = ({ data: { products }, currencyList }) => (
   <div id="full-page">
     <div id="nav">
       <div id="left-section">
@@ -36,14 +37,12 @@ const Dashboard = ({ data: { products } }) => (
     <div id="body">
       <div id="body-container">
         {products.map((product, key) => {
-          return (
-            <Product
-              details={product}
-              key={key}
-            />
-          );
+          return <Product details={product} key={key} />;
         })}
       </div>
+      <Cart
+        currencyList={currencyList}
+      />
     </div>
   </div>
 );
