@@ -1,6 +1,6 @@
 import React from "react";
 
-const Product = ({ details }) => {
+const Product = ({ details, onIncrement }) => {
   const { image_url, title, price } = details;
   return (
     <div className="product">
@@ -9,7 +9,12 @@ const Product = ({ details }) => {
         <p className="title">{title}</p>
         <p className="cost">From {price}</p>
       </div>
-      <button className="add-to-cart-button">Add to Cart</button>
+      <button
+        className="add-to-cart-button"
+        onClick={() => onIncrement(details)}
+      >
+        Add to Cart
+      </button>
     </div>
   );
 };
