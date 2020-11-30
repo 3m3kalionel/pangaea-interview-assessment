@@ -1,8 +1,3 @@
-# pangaea-interview-assessment
-
-# WorkList
-
-
 ## Introduction
 
 *  This is a web application that is powered by GraphQL(apollo client) on the front-end. It's consumes Panagaea's GraphQL API endpoint.
