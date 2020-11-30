@@ -1,4 +1,4 @@
-import React, { useEffect } from "react";
+import React from "react";
 
 import "../styles/CartItem.css";
 
@@ -8,9 +8,9 @@ const CartItem = ({ itemDetails, onIncrement, onDecrement, onDelete }) => {
     <div className="cart-item-detail">
       <div className="cart-item-detail-lhs">
         <div>
-          <h6>{title}</h6>
+          <h6 className="product-title">{title}</h6>
         </div>
-        <div>
+        <div className="quantity-buttons-container">
           <button
             className="quantity-button"
             onClick={() => {

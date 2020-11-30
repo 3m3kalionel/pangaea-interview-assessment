@@ -1,4 +1,6 @@
 import React, { useState, useEffect } from "react";
+import { IconContext } from "react-icons";
+import { IoCartOutline } from "react-icons/io5";
 
 import Product from "./Product";
 import Cart from "./Cart";
@@ -6,6 +8,8 @@ import "../styles/Dashboard.css";
 
 const Dashboard = ({ refetch, data: { products }, currencyList }) => {
   const [cart, setCart] = useState([]);
+  const [isCartOpen, setIsCartOpen] = useState(false);
+  const [cartItemTotal, setCartItemTotal] = useState(0);
 
   useEffect(() => {
     let newArray = [];
@@ -14,13 +18,24 @@ const Dashboard = ({ refetch, data: { products }, currencyList }) => {
         if (product.id === value.id) {
           newArray.push({
             ...product,
-            quantity: value.quantity
+            quantity: value.quantity,
           });
         }
       });
     });
     setCart(newArray);
   }, [products]);
+
+  const toggleCart = (isCartOpen) => {
+    const nextStateCartWidth = isCartOpen === true ? 0 : "600px";
+    document.getElementById("cart").style.width = nextStateCartWidth;
+    setIsCartOpen(!isCartOpen);
+  };
+
+  const total = cart.reduce((acc, obj) => {
+    acc += obj.quantity;
+    return acc;
+  }, 0);
 
   const getCartItem = (productId) =>
     cart.find((element) => element.id === productId);
@@ -39,12 +54,14 @@ const Dashboard = ({ refetch, data: { products }, currencyList }) => {
         }
       });
       setCart(newCart);
+      setCartItemTotal(total);
     }
   };
 
   const deleteCartItem = (id) => {
     const newCart = cart.filter((item) => item.id !== id);
     setCart(newCart);
+    setCartItemTotal(total);
   };
 
   const handleRemoveCartItem = (product) => {
@@ -61,6 +78,7 @@ const Dashboard = ({ refetch, data: { products }, currencyList }) => {
         }
       });
       setCart(newCart);
+      setCartItemTotal(total);
     }
   };
 
@@ -77,7 +95,17 @@ const Dashboard = ({ refetch, data: { products }, currencyList }) => {
         <div id="right-section">
           <ul>
             <li>Account</li>
-            <li>Cart</li>
+            <li
+              onClick={() => {
+                toggleCart(isCartOpen);
+              }}
+              id="cart-item"
+            >
+              <IconContext.Provider value={{ size: "20px" }}>
+                <IoCartOutline />
+              </IconContext.Provider>
+              <span> {cartItemTotal}</span>
+            </li>
           </ul>
         </div>
       </div>
@@ -98,12 +126,13 @@ const Dashboard = ({ refetch, data: { products }, currencyList }) => {
         <div id="body-container">
           {products.map((product, key) => {
             return (
-            <Product
+              <Product
                 details={product}
                 key={key}
                 onIncrement={handleAddCartItem}
-            />
-            )
+                onToggle={toggleCart}
+              />
+            );
           })}
         </div>
         <Cart
@@ -113,6 +142,7 @@ const Dashboard = ({ refetch, data: { products }, currencyList }) => {
           onDelete={deleteCartItem}
           refetch={refetch}
           currencyList={currencyList}
+          onToggle={() => toggleCart(isCartOpen)}
         />
       </div>
     </div>
