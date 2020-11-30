@@ -7,6 +7,14 @@ div.cart-item-detail {
   position: relative;
 }
 
+.product-title {
+  font-weight: 500;
+}
+
+div.quantity-buttons-container {
+  border: 1px solid black;
+}
+
 .cart-item-detail-lhs {
   display: flex;
   flex-direction: column;

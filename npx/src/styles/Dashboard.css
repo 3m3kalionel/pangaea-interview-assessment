@@ -38,6 +38,21 @@ li {
   margin: 0 16px;
 }
 
+div#right-section ul li:last-child {
+  position: relative;
+}
+
+div#right-section ul li:last-child > span {
+  position: absolute;
+  top: -7px;
+  left: 19px;
+  font-size: 13px;
+}
+
+div#right-section ul li:last-child:hover {
+  cursor: pointer;
+}
+
 div#left-section ul li:first-child {
   font-size: 24px;
   letter-spacing: 4px;

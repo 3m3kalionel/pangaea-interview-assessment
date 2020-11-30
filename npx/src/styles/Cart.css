@@ -1,17 +1,29 @@
 div#cart {
-  width: 50%;
   height: 100%;
   background: #f2f2ef;
   top: 0;
   right: 0;
-  width: 600px;
+  width: 0;
   position: fixed;
-  padding-left: 16px;
-  padding-right: 16px;
+  transition: 0.3s;
+}
+
+div#content-container {
+  padding: 0 16px;
+}
+
+span#close-cart {
+  position: absolute;
+  top: 20px;
+}
+
+span#close-cart:hover {
+  cursor: pointer;
 }
 
 div#cart-title h5 {
   text-align: center;
+  position: relative;
 }
 
 select {
