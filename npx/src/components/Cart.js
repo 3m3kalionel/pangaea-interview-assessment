@@ -9,6 +9,7 @@ const Cart = (props) => {
     onIncrement,
     onDecrement,
     onDelete,
+    refetch,
     currencyList,
   } = props;
 
@@ -23,7 +24,7 @@ const Cart = (props) => {
         <h5>YOUR CART</h5>
       </div>
       <div>
-        <select onChange={event => event.target.value}>
+      <select onChange={(event) => refetch({ currency: event.target.value })}>
           {currencyList.currency.map((currency, key) => (
             <option value={`${currency}`} key={key}>
               {currency}

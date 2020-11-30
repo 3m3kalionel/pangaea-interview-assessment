@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 
 import Product from "./Product";
 import Cart from "./Cart";
@@ -6,6 +6,21 @@ import "../styles/Dashboard.css";
 
 const Dashboard = ({ refetch, data: { products }, currencyList }) => {
   const [cart, setCart] = useState([]);
+
+  useEffect(() => {
+    let newArray = [];
+    cart.forEach((value, index) => {
+      products.forEach((product) => {
+        if (product.id === value.id) {
+          newArray.push({
+            ...product,
+            quantity: value.quantity
+          });
+        }
+      });
+    });
+    setCart(newArray);
+  }, [products]);
 
   const getCartItem = (productId) =>
     cart.find((element) => element.id === productId);
