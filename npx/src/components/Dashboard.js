@@ -10,11 +10,17 @@ const Dashboard = ({ refetch, data: { products }, currencyList }) => {
   const [cart, setCart] = useState([]);
   const [isCartOpen, setIsCartOpen] = useState(false);
   const [cartItemTotal, setCartItemTotal] = useState(0);
+  const [currencyDetails, setCurrencyDetails] = useState({
+    defaultCurrency: currencyList.currency[0],
+    selectedCurrency: null,
+  });
+  const [width, setCartWidth] = useState(0);
+  let nextStateCartWidth;
 
   useEffect(() => {
     let newArray = [];
     cart.forEach((value, index) => {
-      products.forEach((product) => {
+      products.forEach(product => {
         if (product.id === value.id) {
           newArray.push({
             ...product,
@@ -24,29 +30,32 @@ const Dashboard = ({ refetch, data: { products }, currencyList }) => {
       });
     });
     setCart(newArray);
-  }, [products]);
+  }, [products, width]);
 
-  const toggleCart = (isCartOpen) => {
-    const nextStateCartWidth = isCartOpen === true ? 0 : "600px";
-    document.getElementById("cart").style.width = nextStateCartWidth;
+  const toggleCart = isCartOpen => {
+    nextStateCartWidth = isCartOpen === true ? 0 : "600px";
     setIsCartOpen(!isCartOpen);
+    setCartWidth(nextStateCartWidth);
   };
 
-  const total = cart.reduce((acc, obj) => {
-    acc += obj.quantity;
-    return acc;
-  }, 0);
+  const getCartItemsTotal = newCart =>
+    newCart.reduce((acc, obj) => {
+      acc += obj.quantity;
+      return acc;
+    }, 0);
 
-  const getCartItem = (productId) =>
-    cart.find((element) => element.id === productId);
+  const getCartItem = productId =>
+    cart.find(element => element.id === productId);
 
-  const handleAddCartItem = (product) => {
+  const handleAddCartItem = product => {
     const { id } = product;
     const cartItem = getCartItem(id);
     if (!cartItem) {
-      setCart([...cart, { ...product, quantity: 1 }]);
+      const newCart = [...cart, { ...product, quantity: 1 }];
+      setCart(newCart);
+      setCartItemTotal(getCartItemsTotal(newCart));
     } else {
-      const newCart = cart.map((element) => {
+      const newCart = cart.map(element => {
         if (element.id === id) {
           return { ...product, quantity: cartItem.quantity + 1 };
         } else {
@@ -54,23 +63,23 @@ const Dashboard = ({ refetch, data: { products }, currencyList }) => {
         }
       });
       setCart(newCart);
-      setCartItemTotal(total);
+      setCartItemTotal(getCartItemsTotal(newCart));
     }
   };
 
-  const deleteCartItem = (id) => {
-    const newCart = cart.filter((item) => item.id !== id);
+  const deleteCartItem = id => {
+    const newCart = cart.filter(item => item.id !== id);
     setCart(newCart);
-    setCartItemTotal(total);
+    setCartItemTotal(getCartItemsTotal(newCart));
   };
 
-  const handleRemoveCartItem = (product) => {
+  const handleRemoveCartItem = product => {
     const { id, quantity } = product;
     const cartItem = getCartItem(id);
     if (cartItem.quantity === 1) {
       deleteCartItem(product.id);
     } else {
-      const newCart = cart.map((item) => {
+      const newCart = cart.map(item => {
         if (item.id === id) {
           return { ...product, quantity: quantity - 1 };
         } else {
@@ -78,12 +87,21 @@ const Dashboard = ({ refetch, data: { products }, currencyList }) => {
         }
       });
       setCart(newCart);
-      setCartItemTotal(total);
+      setCartItemTotal(getCartItemsTotal(newCart));
     }
+  };
+
+  const cartActions = {
+    onIncrement: handleAddCartItem,
+    onDecrement: handleRemoveCartItem,
+    onDelete: deleteCartItem,
+    onToggle: () => toggleCart(isCartOpen),
+    onClick: setCurrencyDetails,
   };
 
   return (
     <div id="full-page">
+      <div id="fade"></div>
       <div id="nav">
         <div id="left-section">
           <ul>
@@ -104,7 +122,7 @@ const Dashboard = ({ refetch, data: { products }, currencyList }) => {
               <IconContext.Provider value={{ size: "20px" }}>
                 <IoCartOutline />
               </IconContext.Provider>
-              <span> {cartItemTotal}</span>
+              <span>{cartItemTotal}</span>
             </li>
           </ul>
         </div>
@@ -131,18 +149,24 @@ const Dashboard = ({ refetch, data: { products }, currencyList }) => {
                 key={key}
                 onIncrement={handleAddCartItem}
                 onToggle={toggleCart}
+                onClick={setCurrencyDetails}
+                currencyDetails={currencyDetails}
               />
             );
           })}
         </div>
         <Cart
           cart={cart}
-          onIncrement={handleAddCartItem}
-          onDecrement={handleRemoveCartItem}
-          onDelete={deleteCartItem}
+          // onIncrement={handleAddCartItem}
+          // onDecrement={handleRemoveCartItem}
+          // onDelete={deleteCartItem}
+          // onToggle={() => toggleCart(isCartOpen)}
+          // onClick={setCurrencyDetails}
+          cartActions={cartActions}
           refetch={refetch}
           currencyList={currencyList}
-          onToggle={() => toggleCart(isCartOpen)}
+          width={width}
+          currencyDetails={currencyDetails}
         />
       </div>
     </div>

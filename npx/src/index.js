@@ -1,16 +1,16 @@
-import React from 'react';
-import ReactDOM from 'react-dom';
+import React from "react";
+import ReactDOM from "react-dom";
 import {
   ApolloClient,
   InMemoryCache,
   ApolloProvider,
   useQuery,
-  gql
+  gql,
 } from "@apollo/client";
 
-import reportWebVitals from './reportWebVitals';
+import reportWebVitals from "./reportWebVitals";
 import Dashboard from "./components/Dashboard";
-import './index.css';
+import "./index.css";
 
 const client = new ApolloClient({
   uri: "https://pangaea-interviews.now.sh/api/graphql",
@@ -20,8 +20,8 @@ const client = new ApolloClient({
 function ProductsPage() {
   const {
     data: currencyList,
-    loading: isLoading,
-    error: hasError
+    loading: isLoadingCurrency,
+    error: currencyError,
   } = useQuery(gql`
     {
       currency
@@ -43,12 +43,13 @@ function ProductsPage() {
     `,
     {
       variables: {
-        currency: "USD"
-      }
+        currency: "USD",
+      },
     }
   );
-  if (loading) return "Loading...";
-  if (error) return `Error! ${error.message}`;
+  let hasError = error || currencyError;
+  if (loading || isLoadingCurrency) return "Loading...";
+  if (hasError) return `Error! ${hasError.message}`;
   return (
     <Dashboard data={data} refetch={refetch} currencyList={currencyList} />
   );
@@ -68,7 +69,7 @@ ReactDOM.render(
   <React.StrictMode>
     <App />
   </React.StrictMode>,
-  document.getElementById('root')
+  document.getElementById("root")
 );
 
 reportWebVitals();

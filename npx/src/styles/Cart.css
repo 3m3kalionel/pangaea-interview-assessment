@@ -12,12 +12,13 @@ div#content-container {
   padding: 0 16px;
 }
 
-span#close-cart {
+button#close-cart {
   position: absolute;
   top: 20px;
+  display: flex;
 }
 
-span#close-cart:hover {
+button#close-cart:hover {
   cursor: pointer;
 }
 
