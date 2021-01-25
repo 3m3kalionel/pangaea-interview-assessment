@@ -1,8 +1,15 @@
 import React from "react";
+import CurrencyFormat from "react-currency-format";
 
 import "../styles/CartItem.css";
 
-const CartItem = ({ itemDetails, onIncrement, onDecrement, onDelete }) => {
+const CartItem = ({
+  itemDetails,
+  onIncrement,
+  onDecrement,
+  onDelete,
+  selectedCurrency,
+}) => {
   const { image_url, price, quantity, title, id } = itemDetails;
   return (
     <div className="cart-item-detail">
@@ -31,7 +38,16 @@ const CartItem = ({ itemDetails, onIncrement, onDecrement, onDelete }) => {
         </div>
       </div>
       <div className="cart-item-detail-center">
-        <span>{(price * quantity).toFixed(2)}</span>
+        <span>
+          {`${selectedCurrency} `}
+          <CurrencyFormat
+            value={price * quantity}
+            thousandSeparator={true}
+            displayType={"text"}
+            decimalScale={2}
+            fixedDecimalScale={true}
+          />
+        </span>
       </div>
       <div className="cart-item-detail-rhs">
         <img src={image_url} alt={title} />

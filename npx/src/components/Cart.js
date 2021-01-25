@@ -1,40 +1,49 @@
 import React from "react";
 import { IconContext } from "react-icons";
 import { IoArrowForwardCircleOutline } from "react-icons/io5";
+import CurrencyFormat from "react-currency-format";
 
 import CartItem from "./CartItem";
 import "../styles/Cart.css";
 
-const Cart = (props) => {
+const Cart = props => {
   const {
     cart,
-    onIncrement,
-    onDecrement,
-    onDelete,
+    cartActions,
     refetch,
     currencyList,
-    onToggle,
+    width,
+    currencyDetails,
   } = props;
 
-  const total = cart.reduce((acc, obj) => {
+  const { onIncrement, onDecrement, onDelete, onToggle, onClick } = cartActions;
+  const { selectedCurrency, defaultCurrency } = currencyDetails;
+
+  const getCartPriceTotal = cart.reduce((acc, obj) => {
     acc += obj.price * obj.quantity;
     return acc;
   }, 0);
 
   return (
-    <div id="cart">
+    <div id="cart" style={{ width }}>
       <div id="content-container">
         <div id="cart-title">
-          <span id="close-cart">
+          <button id="close-cart">
             <IconContext.Provider value={{ size: "24px" }}>
               <IoArrowForwardCircleOutline onClick={onToggle} />
             </IconContext.Provider>
-          </span>
+          </button>
           <h5>YOUR CART</h5>
         </div>
         <div>
           <select
-            onChange={(event) => refetch({ currency: event.target.value })}
+            onChange={({ target: { value } }) => {
+              refetch({ currency: value });
+              onClick({
+                ...currencyDetails,
+                selectedCurrency: value,
+              });
+            }}
           >
             {currencyList.currency.map((currency, key) => (
               <option value={`${currency}`} key={key}>
@@ -52,6 +61,7 @@ const Cart = (props) => {
               onIncrement={onIncrement}
               onDecrement={onDecrement}
               onDelete={onDelete}
+              selectedCurrency={selectedCurrency}
             />
           ))}
         </div>
@@ -59,7 +69,16 @@ const Cart = (props) => {
         <div id="fixed-footer">
           <div id="details">
             <div>Subtotal</div>
-            <span>{`${total.toFixed(2)}`}</span>
+            <span>
+              <CurrencyFormat
+                value={getCartPriceTotal}
+                thousandSeparator={true}
+                displayType={"text"}
+                decimalScale={2}
+                fixedDecimalScale={true}
+                prefix={`${selectedCurrency || defaultCurrency} `}
+              />
+            </span>
           </div>
 
           <button id="subscribe">MAKE THIS A SUBSCRIPTION (SAVE20%)</button>
